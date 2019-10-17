@@ -1,10 +1,11 @@
 let video;
 let posX;
 let posY;
-let examplesLimit = 100;
+let examplesLimit = 10;
 const knnClassifier = ml5.KNNClassifier();
 let featureExtractor;
 let counts;
+let predictionStatus = false;
 function setup() {
   featureExtractor = ml5.featureExtractor('MobileNet', modelLoaded);
   createCanvas(1280, 720);
@@ -15,8 +16,8 @@ function setup() {
 }
 
 function draw() {
-  //background(255);
-  const counts = knnClassifier.getCountByLabel();
+  background(255);
+  counts = knnClassifier.getCountByLabel();
   image(video, 0, 0, video.width, video.height);
   //console.log(video.size());
   //background(220);
@@ -51,13 +52,25 @@ function resetLabel(label){
   knnClassifier.clearLabel(label);
 }
 
+function flipPredict(){
+  const numLabels = knnClassifier.getNumLabels();
+  if(predictionStatus == false){
+    if(numLabels > 0) predictionStatus = true;
+  }
+  else{
+    predictionStatus = false;
+  }
+}
+
 function addExampleToModel(label){
+  console.log("adding " + label);
   if((counts[label] || 0) < examplesLimit){
     if(counts[label] == examplesLimit - 1) console.log(label + " exceeded");
     const features = featureExtractor.infer(video);
     knnClassifier.addExample(features, label);
   }
 }
+
 function videoLoaded() {
   console.log("Video Loaded!");
 }
