@@ -21,6 +21,7 @@ function draw() {
   //console.log(video.size());
   //background(220);
 }
+
 function keyPressed(){
   if(keyCode != 16) {
     if(keyCode == 81) addExampleToModel("top left");
@@ -45,12 +46,17 @@ function keyPressed(){
     if(keyCode == 67) resetLabel("bottom right");
   }
 }
-  
+
+function resetLabel(label){
+  knnClassifier.clearLabel(label);
+}
+
 function addExampleToModel(label){
-  
-  const features = featureExtractor.infer(video);
-  knnClassifier.addExample(features, label);
-  
+  if((counts[label] || 0) < examplesLimit){
+    if(counts[label] == examplesLimit - 1) console.log(label + " exceeded");
+    const features = featureExtractor.infer(video);
+    knnClassifier.addExample(features, label);
+  }
 }
 function videoLoaded() {
   console.log("Video Loaded!");
