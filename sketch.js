@@ -1,12 +1,12 @@
 let video;
 let posX;
 let posY;
-const knn_const = 3;
-let examplesLimit = 10;
+const knn_const = 7;
+let examplesLimit = 50;
 const knnClassifier = ml5.KNNClassifier();
 let featureExtractor;
 let counts;
-let predictionStatus = true;
+let predictionStatus = false;
 let currentRes = "";
 function setup() {
   featureExtractor = ml5.featureExtractor('MobileNet', modelLoaded);
@@ -15,17 +15,26 @@ function setup() {
   //console.log(video.size());
   video.size(600, 450)
   video.hide();
+  frameRate(30);
 }
 
 function draw() {
   background(255);
   counts = knnClassifier.getCountByLabel();
   image(video, 0, 0, video.width, video.height);
+  let eye_view = get(220, 200, 140, 30);
+  image(eye_view, 0, 0, eye_view.width, eye_view.height);
+  noFill();
+  strokeWeight(4);
+  stroke(255, 0, 0);
+  rect(220, 200, 140, 30);
   //console.log(video.size());
   //background(220);
-  console.log("drawing");
+  //console.log("drawing");
   textSize(32);
   fill('blue');
+  stroke(random(255), random(255), random(255));
+  if(!predictionStatus) currentRes = "";
   text("my prediction is " + currentRes, 0, 490);
 }
 
@@ -73,7 +82,7 @@ function gotResults(err, result){
 }
 
 function predictNow(){
-  const features = featureExtractor.infer(video);
+  const features = featureExtractor.infer(eye_view);
   knnClassifier.classify(features, knn_const, gotResults);
 }
 function flipPredict(){
@@ -90,7 +99,7 @@ function addExampleToModel(label){
   console.log("adding " + label);
   if((counts[label] || 0) < examplesLimit){
     if(counts[label] == examplesLimit - 1) console.log(label + " exceeded");
-    const features = featureExtractor.infer(video);
+    const features = featureExtractor.infer(eye_view);
     knnClassifier.addExample(features, label);
   }
 }
