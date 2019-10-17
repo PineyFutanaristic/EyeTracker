@@ -1,11 +1,13 @@
 let video;
 let posX;
 let posY;
+const knn_const = 3;
 let examplesLimit = 10;
 const knnClassifier = ml5.KNNClassifier();
 let featureExtractor;
 let counts;
-let predictionStatus = false;
+let predictionStatus = true;
+let currentRes = "";
 function setup() {
   featureExtractor = ml5.featureExtractor('MobileNet', modelLoaded);
   createCanvas(1280, 720);
@@ -21,9 +23,16 @@ function draw() {
   image(video, 0, 0, video.width, video.height);
   //console.log(video.size());
   //background(220);
+  console.log("drawing");
+  textSize(32);
+  fill('blue');
+  text("my prediction is " + currentRes, 0, 490);
 }
 
 function keyPressed(){
+  if(keyCode == 32){
+    predictNow();
+  }
   if(keyCode != 16) {
     if(keyCode == 81) addExampleToModel("top left");
     if(keyCode == 87) addExampleToModel("top");
@@ -52,6 +61,21 @@ function resetLabel(label){
   knnClassifier.clearLabel(label);
 }
 
+function gotResults(err, result){
+  if(err) console.log(err);
+  if(result.label){
+    currentRes = result.label;
+    //console.log("i'm working");
+    console.log(result.label);
+    //text("my prediction is " + result.label, 0, 0);
+  }
+  predictNow();
+}
+
+function predictNow(){
+  const features = featureExtractor.infer(video);
+  knnClassifier.classify(features, knn_const, gotResults);
+}
 function flipPredict(){
   const numLabels = knnClassifier.getNumLabels();
   if(predictionStatus == false){
