@@ -1,1 +1,1 @@
-# EyeTracker
+# SWETE project
