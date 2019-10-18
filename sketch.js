@@ -1,8 +1,8 @@
 let video;
 let posX;
 let posY;
-let knn_const = 7;
-let examplesLimit = 40;
+let knn_const = 12;
+let examplesLimit = 60;
 const knnClassifier = ml5.KNNClassifier();
 let featureExtractor;
 let counts;
