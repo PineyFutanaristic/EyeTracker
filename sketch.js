@@ -32,9 +32,9 @@ function draw() {
   strokeWeight(1);
   stroke('black');
   rect(400, 450, 140, 30);
-  let exm = (counts["middle"] || 0);
+  //let exm = (counts["middle"] || 0);
   fill('red');
-  rect(400, 450, 140*(pressed/examplesLimit)*(1/9), 30);
+  rect(400, 470, 140*(pressed/examplesLimit)*(1/9), 30);
   //console.log(video.size());
   //background(220);
   //console.log("drawing");
@@ -101,7 +101,8 @@ function gotResults(err, result){
 
 function predictNow(){
   const features = featureExtractor.infer(video);
-  knnClassifier.classify(features, knn_const, gotResults);
+  if(pressed >= k)
+    knnClassifier.classify(features, knn_const, gotResults);
 }
 
 function saveMyKNN() {
@@ -113,7 +114,7 @@ function loadMyKNN() {
 }
 
 function addExampleToModel(label){
-  //console.log("adding " + label);
+  console.log("adding " + label);
   if((counts[label] || 0) < examplesLimit){
     if(counts[label] == examplesLimit - 1) console.log(label + " exceeded");
     pressed += 1;
