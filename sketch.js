@@ -31,7 +31,7 @@ function draw() {
   rect(220, 200, 140, 30);
   strokeWeight(1);
   stroke('black');
-  rect(400, 450, 140, 30);
+  rect(400, 470, 140, 30);
   //let exm = (counts["middle"] || 0);
   fill('red');
   rect(400, 470, 140*(pressed/examplesLimit)*(1/9), 30);
@@ -85,7 +85,7 @@ function keyPressed(){
 function resetLabel(label){
   console.log("reset " + label);
   pressed -= ((counts[label] || 0));
-  knnClassifier.clearLabel(label);
+  if(((counts[label] || 0)))knnClassifier.clearLabel(label);
 }
 
 function gotResults(err, result){
